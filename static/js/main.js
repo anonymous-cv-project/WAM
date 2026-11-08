@@ -1,66 +1,4 @@
-/* =====================================================================
-   CONFIG — edit this block to change file names, angles and captions.
-   All video paths are relative to static/videos/.
-   A missing video simply shows its grey placeholder label.
-   ===================================================================== */
-const CONFIG = {
-  // ---------- 1. Real world: our model, successful rollouts ----------
-  // phi = azimuth |φ| of camera 2 about the table center (0° robot side, 180° opposite side).
-  // Clips with phi >= unseenFrom get an orange "unseen side" tag.
-  unseenFrom: 135,
-  real: [
-    { name: 'Drawer Retrieval', clips: [
-      { file: 'real/drawer_1.mp4', phi: 30 },
-      { file: 'real/drawer_2.mp4', phi: 90 },
-      { file: 'real/drawer_3.mp4', phi: 130 },
-      { file: 'real/drawer_4.mp4', phi: 170 } ] },
-    { name: 'Hammer Block', clips: [
-      { file: 'real/hammer_1.mp4', phi: 60 },
-      { file: 'real/hammer_2.mp4', phi: 150 } ] }
-  ],
-
-  // ---------- 2. Speed ----------
-  chunkSeconds: 1.6,     // one 32-action chunk at 20 Hz
-  barWindowSeconds: 30,  // time span drawn by each bar
-  speed: [
-    { key: 'drawer', name: 'Drawer Retrieval', pair: [
-      { file: 'speed/drawer_original.mp4', name: 'Original',                    sub: 'LingBot-VA server, 25/50 denoising steps',     pause: 7.51, acting: '18%' },
-      { file: 'speed/drawer_fast.mp4',     name: 'Ours · fewer denoising steps', sub: 'fixed-layout KV cache + 10/20 denoising steps', pause: 1.96, acting: '45%' } ] },
-    { key: 'hammer', name: 'Hammer Block', pair: [
-      { file: 'speed/hammer_original.mp4', name: 'Original',                    sub: 'LingBot-VA server, 25/50 denoising steps',     pause: 7.51, acting: '18%' },
-      { file: 'speed/hammer_fast.mp4',     name: 'Ours · fewer denoising steps', sub: 'fixed-layout KV cache + 10/20 denoising steps', pause: 1.96, acting: '45%' } ] }
-  ],
-  // The even faster variant that fails
-  limit: {
-    file: 'speed/drawer_async_fail.mp4',
-    title: 'Why not go even faster?',
-    variant: 'Asynchronous chunk prediction',
-    pause: 0.56, acting: '77%',
-    text: 'Built on the same KV cache, this variant predicts the next action chunk while the current one is still executing, so the robot almost never waits. But the next chunk is then conditioned on the model\u2019s own prediction of the scene instead of the observation that was about to arrive. Over a trial the error accumulates and the arm creeps toward the drawer handle. Fewer denoising steps, in contrast, keep the latest observation and stay within seed-to-seed variation, so we deploy that path.'
-  },
-
-  // ---------- 3. LIBERO viewpoints (ours only) ----------
-  // files: libero/<task key>/az<angle>.mp4
-  liberoTasks: [
-    { key: 'task1', name: '[LIBERO-Long task 1]' },
-    { key: 'task2', name: '[LIBERO-Long task 2]' },
-    { key: 'task3', name: '[LIBERO-Long task 3]' }
-  ],
-  angles: [0, 45, 90, 135, 180],
-
-  // ---------- 4. Withheld camera (LIBERO) ----------
-  // files: withheld/<example key>/<cam2|wrist|imagined|gt>.mp4
-  withheld: [
-    { key: 'ex1', name: 'Example 1' },
-    { key: 'ex2', name: 'Example 2' }
-  ],
-
-  // ---------- 5. RoboTwin gallery ----------
-  // files: robotwin/T01.mp4 ... T50.mp4 (export each as a 2x2 grid of the four cameras)
-  // name: task name; e1/e2: azimuths of the two external cameras in degrees (optional, shown under the tile)
-  robotwin: Array.from({ length: 50 }, () => ({ name: '[task name]', e1: null, e2: null }))
-};
-
+/* Page logic. Settings live in static/js/config.js */
 /* ===================================================================== */
 const V = 'static/videos/';
 const $ = (s, r = document) => r.querySelector(s);
@@ -143,36 +81,34 @@ function segToggle(el, items, onPick) {
 })();
 
 /* ---------- 2. speed ---------- */
-function segs(pause) {
-  const out = []; let t = 0; const W = CONFIG.barWindowSeconds, A = CONFIG.chunkSeconds;
-  while (t < W) {
-    const a = Math.min(A, W - t); out.push(`<i style="flex:${a} 1 0;background:#2563EB"></i>`); t += a;
-    if (t >= W) break;
-    const p = Math.min(pause, W - t); out.push(`<i style="flex:${p} 1 0;background:#D4D7DD"></i>`); t += p;
-  }
-  return out.join('');
-}
+// Simple progress bar under each video: grey track, black fill. Click to seek.
 function speedCol(s, id, extraBadge = '') {
   return `<div class="speed-col">
     <div class="speed-title"><b>${esc(s.name)}</b><span>${esc(s.sub || '')}</span></div>
     ${tile(s.file, { ratio: 'r169', label: s.name, caption: s.name,
-      extra: `<div class="badge rt-tag">REAL TIME</div>${extraBadge}<div class="badge clock" data-clock="${id}">00:00.0</div>` })}
-    <div class="bar">${segs(s.pause)}<span class="head" data-head="${id}"></span></div>
-    <div class="speed-nums"><span>Pause per chunk <b>${s.pause.toFixed(2)} s</b></span><span>Time acting <b>${esc(s.acting)}</b></span></div>
+      extra: `${extraBadge}<div class="badge clock" data-clock="${id}">00:00.0</div>` })}
+    <div class="progress" data-bar="${id}" role="progressbar" aria-label="Playback progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="fill" data-fill="${id}"></span></div>
   </div>`;
 }
-function bindClock(v, id) {
+function bindSpeed(v, id) {
+  const bar = $(`[data-bar="${id}"]`), fill = $(`[data-fill="${id}"]`), clock = $(`[data-clock="${id}"]`);
   v.addEventListener('timeupdate', () => {
-    const t = v.currentTime;
-    const c = $(`[data-clock="${id}"]`), h = $(`[data-head="${id}"]`);
-    if (c) c.textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${(t % 60).toFixed(1).padStart(4, '0')}`;
-    if (h) h.style.left = `calc(${(Math.min(t / CONFIG.barWindowSeconds, 1) * 100).toFixed(2)}% - 1px)`;
+    const t = v.currentTime, d = v.duration || 0;
+    const pct = d ? Math.min(t / d, 1) * 100 : 0;
+    fill.style.width = pct.toFixed(2) + '%';
+    bar.setAttribute('aria-valuenow', Math.round(pct));
+    clock.textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${(t % 60).toFixed(1).padStart(4, '0')}`;
+  });
+  bar.addEventListener('click', e => {
+    if (!v.duration) return;
+    const r = bar.getBoundingClientRect();
+    v.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * v.duration;
   });
 }
 function renderSpeed(i) {
   const set = CONFIG.speed[i];
   $('#speed-grid').innerHTML = set.pair.map((s, j) => speedCol(s, 's' + j)).join('');
-  $$('#speed-grid video').forEach((v, j) => bindClock(v, 's' + j));
+  $$('#speed-grid video').forEach((v, j) => bindSpeed(v, 's' + j));
   watch($('#speed-grid'));
 }
 segToggle($('#speed-toggle'), CONFIG.speed, renderSpeed);
@@ -187,9 +123,9 @@ $('#limit-card').innerHTML = `
     <h3>${esc(L.title)}</h3>
     <p>${esc(L.text)}</p>
   </div>
-  <div class="limit-video">${speedCol({ file: L.file, name: L.variant, sub: 'Drawer Retrieval', pause: L.pause, acting: L.acting }, 'lim',
+  <div class="limit-video">${speedCol({ file: L.file, name: L.variant, sub: 'Drawer Retrieval' }, 'lim',
     '<div class="badge fail">✗ Failure</div>')}</div>`;
-bindClock($('#limit-card video'), 'lim');
+bindSpeed($('#limit-card video'), 'lim');
 watch($('#limit-card'));
 
 /* ---------- 3. LIBERO viewpoints ---------- */
@@ -208,8 +144,8 @@ renderLibero(0);
 const OBS = [
   { key: 'cam2',     t: 'Camera 2',                n: 'input' },
   { key: 'wrist',    t: 'Wrist camera',            n: 'input' },
-  { key: 'imagined', t: 'Camera 1 — imagined',     n: 'what control reads', cls: 'imagined' },
-  { key: 'gt',       t: 'Camera 1 — ground truth', n: 'for reference only, never given to the model', cls: 'gt' }
+  { key: 'imagined', t: 'Camera 1 (imagined)',     n: 'what control reads', cls: 'imagined' },
+  { key: 'gt',       t: 'Camera 1 (ground truth)', n: 'for reference only, never given to the model', cls: 'gt' }
 ];
 function renderObs(i) {
   const ex = CONFIG.withheld[i];

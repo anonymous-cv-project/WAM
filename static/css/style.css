@@ -231,3 +231,13 @@ footer{padding:32px 24px;text-align:center;font-size:13px;color:var(--faint)}
 .real-tiles .badge.unseen{left:12px;top:104px}
 .real-blocks .legend-panel{grid-column:auto;align-self:flex-start}
 .rt-cams{font-size:10px;color:var(--faint);white-space:nowrap}
+
+/* ===== v5 ===== */
+.badge.fail{left:10px;top:10px}
+.bar-empty{flex:1;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--faint);background:#EEF0F3}
+.bar{height:16px}
+
+/* ===== v6: plain progress bar ===== */
+.progress{position:relative;height:6px;border-radius:3px;background:#D4D7DD;overflow:hidden;cursor:pointer}
+.progress .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ink)}
+.limit-video .progress{background:#E8C9C9}
