@@ -112,3 +112,4 @@ const CONFIG = {
     { name: 'stamp seal', e1: null, e2: null },  // T49.mp4
     { name: 'turn switch', e1: null, e2: null }  // T50.mp4
   ]
+};
