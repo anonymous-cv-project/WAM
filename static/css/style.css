@@ -241,3 +241,22 @@ footer{padding:32px 24px;text-align:center;font-size:13px;color:var(--faint)}
 .progress{position:relative;height:6px;border-radius:3px;background:#D4D7DD;overflow:hidden;cursor:pointer}
 .progress .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ink)}
 .limit-video .progress{background:#E8C9C9}
+
+/* ===== v7: gallery names wrap to two lines ===== */
+.rt-name{white-space:normal;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.6em}
+
+/* ===== v9: camera maps following the sketch (robot at the top) ===== */
+.rmap{position:absolute;left:12px;top:12px;width:104px;height:84px;border-radius:8px;background:rgba(255,255,255,.93);pointer-events:none}
+.rm-robot{position:absolute;left:50%;top:7%;width:30%;height:13%;transform:translateX(-50%);border-radius:2px;background:#1A1C21}
+.rm-table{position:absolute;left:50%;top:58%;width:52%;height:34%;transform:translate(-50%,-50%);border:1.5px solid #4B5160;border-radius:2px}
+.rm-vis{position:absolute;width:13px;height:13px;transform:translate(-50%,-50%);border-radius:50%;border:2.5px solid #1A1C21;background:#fff;box-sizing:border-box}
+.rm-blind{position:absolute;transform:translate(-50%,-50%);font-size:15px;font-weight:700;line-height:1;color:#1A1C21}
+.split-map{display:flex;flex-direction:column;align-items:center;gap:0;flex-shrink:0}
+.sm-robot{width:46px;height:20px;border-radius:3px;background:#1A1C21;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;margin-bottom:-2px;position:relative;z-index:1}
+.sm-circle{position:relative;width:132px;height:132px;border-radius:50%;background:linear-gradient(to bottom,#93C5FD 0 50%,#FDBA74 50% 100%)}
+.sm-table{position:absolute;left:50%;top:50%;width:70px;height:52px;transform:translate(-50%,-50%);border-radius:3px;background:#fff;border:1.5px solid #4B5160}
+.lg-vis{width:14px;height:14px;border-radius:50%;border:2.5px solid #1A1C21;box-sizing:border-box;flex-shrink:0}
+.lg-blind{width:14px;text-align:center;font-size:14px;font-weight:700;color:#1A1C21;flex-shrink:0}
+.rmap{width:136px;height:108px}
+.rm-vis{width:17px;height:17px;border-width:3px}
+.rm-blind{font-size:19px}
