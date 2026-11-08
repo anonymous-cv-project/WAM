@@ -28,10 +28,10 @@ const CONFIG = {
   // Leave acting: [] and the bar shows "not annotated yet".
   speed: [
     { key: 'drawer', name: 'Drawer Retrieval', pair: [
-      { file: 'speed/drawer_original.mp4', name: 'Original',                    sub: 'LingBot-VA server, 25/50 denoising steps',     acting: [] },
+      { file: 'speed/drawer_original.mp4', name: 'Original',                    sub: 'fixed-layout KV cache + 25/50 denoising steps',     acting: [] },
       { file: 'speed/drawer_fast.mp4',     name: 'Ours · fewer denoising steps', sub: 'fixed-layout KV cache + 10/20 denoising steps', acting: [] } ] },
     { key: 'hammer', name: 'Hammer Block', pair: [
-      { file: 'speed/hammer_original.mp4', name: 'Original',                    sub: 'LingBot-VA server, 25/50 denoising steps',     acting: [] },
+      { file: 'speed/hammer_original.mp4', name: 'Original',                    sub: 'fixed-layout KV cache + 25/50 denoising steps',     acting: [] },
       { file: 'speed/hammer_fast.mp4',     name: 'Ours · fewer denoising steps', sub: 'fixed-layout KV cache + 10/20 denoising steps', acting: [] } ] }
   ],
   // The even faster variant that fails
@@ -40,15 +40,15 @@ const CONFIG = {
     title: 'Why not go even faster?',
     variant: 'Asynchronous chunk prediction',
     acting: [],
-    text: 'Built on the same KV cache, this variant predicts the next action chunk while the current one is still executing, so the robot almost never waits. But the next chunk is then conditioned on the model\u2019s own prediction of the scene instead of the observation that was about to arrive. Over a trial the error accumulates and the arm creeps toward the drawer handle. Fewer denoising steps, in contrast, keep the latest observation and stay within seed-to-seed variation, so we deploy that path.'
+    text: 'Built on the same KV cache, this variant predicts the next action chunk while the current one is still executing, so the robot almost never waits. But the next chunk is then conditioned on the model\u2019s own prediction of the scene instead of the observation that was about to arrive. Over a trial the error accumulates and the arm creeps toward the drawer handle. In contrast, fewer denoising steps keep the latest observation and stay within seed-to-seed variation, so we deploy that path.'
   },
 
   // ---------- 3. LIBERO viewpoints (ours only) ----------
   // files: libero/<task key>/az<angle>.mp4
   liberoTasks: [
-    { key: 'task1', name: '[LIBERO-Long task 1]' },
-    { key: 'task2', name: '[LIBERO-Long task 2]' },
-    { key: 'task3', name: '[LIBERO-Long task 3]' }
+    { key: 'task1', name: 'Turn on the stove and put the moka pot on it' },
+    { key: 'task2', name: 'Put both the alphabet soup and the tomato sauce in the basket' },
+    { key: 'task3', name: 'Pick up the book and place it in the back compartment of the caddy' }
   ],
   angles: [0, 45, 90, 135, 180],
 
