@@ -217,3 +217,17 @@ footer{padding:32px 24px;text-align:center;font-size:13px;color:var(--faint)}
   .grid-5{grid-template-columns:repeat(2,minmax(0,1fr))}
   .legend-panel{flex-direction:column;align-items:flex-start}
 }
+
+/* ===== v3 ===== */
+.real-tiles{gap:16px}
+.real-tiles .minimap{width:84px;height:84px;left:12px;top:12px;border-radius:10px}
+.real-tiles .minimap .tb{width:28px;height:18px}
+.real-tiles .minimap .bs{width:18px;height:8px;bottom:5px}
+.real-tiles .minimap .cam{width:12px;height:12px}
+.real-tiles .minimap .wh{font-size:12px}
+.real-tiles .badge{font-size:13px;padding:3px 9px}
+.real-tiles .tr{right:12px;top:12px;padding:0}
+.real-tiles .bl{left:12px;bottom:12px}
+.real-tiles .badge.unseen{left:12px;top:104px}
+.real-blocks .legend-panel{grid-column:auto;align-self:flex-start}
+.rt-cams{font-size:10px;color:var(--faint);white-space:nowrap}

@@ -24,19 +24,19 @@ const CONFIG = {
   barWindowSeconds: 30,  // time span drawn by each bar
   speed: [
     { key: 'drawer', name: 'Drawer Retrieval', pair: [
-      { file: 'speed/drawer_original.mp4', name: 'Original',          sub: 'LingBot-VA server, 25/50 steps',              pause: 7.51, acting: '18%' },
-      { file: 'speed/drawer_fast.mp4',     name: 'Ours · exact path', sub: 'fixed-layout cache + CUDA Graph, 10/20 steps', pause: 1.96, acting: '45%' } ] },
+      { file: 'speed/drawer_original.mp4', name: 'Original',                    sub: 'LingBot-VA server, 25/50 denoising steps',     pause: 7.51, acting: '18%' },
+      { file: 'speed/drawer_fast.mp4',     name: 'Ours · fewer denoising steps', sub: 'fixed-layout KV cache + 10/20 denoising steps', pause: 1.96, acting: '45%' } ] },
     { key: 'hammer', name: 'Hammer Block', pair: [
-      { file: 'speed/hammer_original.mp4', name: 'Original',          sub: 'LingBot-VA server, 25/50 steps',              pause: 7.51, acting: '18%' },
-      { file: 'speed/hammer_fast.mp4',     name: 'Ours · exact path', sub: 'fixed-layout cache + CUDA Graph, 10/20 steps', pause: 1.96, acting: '45%' } ] }
+      { file: 'speed/hammer_original.mp4', name: 'Original',                    sub: 'LingBot-VA server, 25/50 denoising steps',     pause: 7.51, acting: '18%' },
+      { file: 'speed/hammer_fast.mp4',     name: 'Ours · fewer denoising steps', sub: 'fixed-layout KV cache + 10/20 denoising steps', pause: 1.96, acting: '45%' } ] }
   ],
   // The even faster variant that fails
   limit: {
     file: 'speed/drawer_async_fail.mp4',
     title: 'Why not go even faster?',
-    variant: 'Asynchronous generation',
+    variant: 'Asynchronous chunk prediction',
     pause: 0.56, acting: '77%',
-    text: 'Generating each chunk while the previous one executes removes most of the waiting, but the action now reads the model’s own prediction where a real observation was about to arrive. Over a trial the error accumulates and the arm creeps toward the drawer handle. We therefore deploy the exact synchronous path above.'
+    text: 'Built on the same KV cache, this variant predicts the next action chunk while the current one is still executing, so the robot almost never waits. But the next chunk is then conditioned on the model\u2019s own prediction of the scene instead of the observation that was about to arrive. Over a trial the error accumulates and the arm creeps toward the drawer handle. Fewer denoising steps, in contrast, keep the latest observation and stay within seed-to-seed variation, so we deploy that path.'
   },
 
   // ---------- 3. LIBERO viewpoints (ours only) ----------
@@ -57,7 +57,7 @@ const CONFIG = {
 
   // ---------- 5. RoboTwin gallery ----------
   // files: robotwin/T01.mp4 ... T50.mp4 (export each as a 2x2 grid of the four cameras)
-  // name: task name; e1/e2: azimuths of the two external cameras (degrees)
+  // name: task name; e1/e2: azimuths of the two external cameras in degrees (optional, shown under the tile)
   robotwin: Array.from({ length: 50 }, () => ({ name: '[task name]', e1: null, e2: null }))
 };
 
@@ -136,11 +136,9 @@ function segToggle(el, items, onPick) {
         (unseen ? `<div class="badge unseen">unseen side</div>` : '');
       return `<div class="cell">${tile(c.file, { label: `${task.name} · ${c.phi}°`, extra, cls: unseen ? 'is-unseen' : '', caption: `${task.name} · camera 2 at |φ| = ${c.phi}°` })}</div>`;
     }).join('');
-    // the last block gets the legend in its empty columns
-    const pad = (ti === CONFIG.real.length - 1 && task.clips.length <= 2) ? legend : '';
-    return `<div class="real-block"><h3>${esc(task.name)}</h3><div class="grid-4">${clips}${pad}</div></div>`;
+    return `<div class="real-block"><h3>${esc(task.name)}</h3><div class="grid-2 real-tiles">${clips}</div></div>`;
   }).join('');
-  if (!$('.legend-panel')) $('#real-blocks').insertAdjacentHTML('afterbegin', legend);
+  $('#real-blocks').insertAdjacentHTML('afterbegin', legend);
   watch($('#real-blocks'));
 })();
 
@@ -228,17 +226,11 @@ renderObs(0);
 /* ---------- 5. RoboTwin gallery ---------- */
 $('#rt-grid').innerHTML = CONFIG.robotwin.map((t, i) => {
   const id = 'T' + String(i + 1).padStart(2, '0');
-  const gap = (t.e1 != null && t.e2 != null) ? Math.abs(((t.e2 - t.e1 + 540) % 360) - 180) : null;
-  const wide = gap != null && gap > 120;
   const cams = (t.e1 != null) ? ` · E1 ${t.e1}° / E2 ${t.e2}°` : '';
-  return `<div class="rt-item" data-wide="${wide}">
+  return `<div class="rt-item">
     ${tile(`robotwin/${id}.mp4`, { ratio: 'r11', label: id, hover: true, caption: `${id} · ${t.name}${cams}` })}
-    <span class="rt-name" title="${esc(t.name)}">${esc(t.name)}</span></div>`;
+    <span class="rt-name" title="${esc(t.name)}">${esc(t.name)}</span>${t.e1 != null ? `<span class="rt-cams">E1 ${t.e1}° · E2 ${t.e2}°</span>` : ''}</div>`;
 }).join('');
-$$('#rt-filter button').forEach(b => b.addEventListener('click', () => {
-  $$('#rt-filter button').forEach(x => x.classList.toggle('on', x === b));
-  $$('.rt-item').forEach(it => it.classList.toggle('hide', b.dataset.f === 'wide' && it.dataset.wide !== 'true'));
-}));
 
 /* ---------- teaser + init ---------- */
 watch();

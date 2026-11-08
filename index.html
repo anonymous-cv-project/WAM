@@ -49,7 +49,7 @@
       <div>
         <div class="eyebrow">REAL WORLD · STREAMING</div>
         <h2>Faster Execution, Same Actions</h2>
-        <p class="lead">Both videos play in real time. The bar under each video shows when the robot is acting and when it waits for inference at each chunk boundary.</p>
+        <p class="lead">Both videos play in real time. On top of a fixed-layout KV cache, we reduce the number of denoising steps; the action still reads the latest observation. The bar under each video shows when the robot is acting and when it waits for inference at each chunk boundary.</p>
       </div>
       <div class="seg" role="tablist" aria-label="Task" id="speed-toggle"></div>
     </div>
@@ -105,10 +105,6 @@
         <div class="eyebrow">SIMULATION · ROBOTWIN 2.0</div>
         <h2>50 Bimanual Tasks, Random Cameras</h2>
         <p class="lead">Every episode samples two external cameras on opposite sides of the table. Hover to play; click to enlarge.</p>
-      </div>
-      <div class="seg" role="group" aria-label="Filter" id="rt-filter">
-        <button type="button" data-f="all" class="on">All 50</button>
-        <button type="button" data-f="wide">Camera gap &gt; 120°</button>
       </div>
     </div>
     <div id="rt-grid" class="rt-grid"></div>
