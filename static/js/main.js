@@ -1,4 +1,10 @@
 /* Page logic. Settings live in static/js/config.js */
+if (typeof CONFIG === 'undefined') {
+  document.body.insertAdjacentHTML('afterbegin',
+    '<div style="padding:16px;background:#DC2626;color:#fff;font:600 15px Inter,sans-serif;text-align:center">' +
+    'static/js/config.js is missing or has a syntax error, so the videos cannot be listed.</div>');
+  throw new Error('CONFIG not loaded');
+}
 /* ===================================================================== */
 const V = 'static/videos/';
 const $ = (s, r = document) => r.querySelector(s);
@@ -164,7 +170,7 @@ $('#rt-grid').innerHTML = CONFIG.robotwin.map((t, i) => {
   const id = 'T' + String(i + 1).padStart(2, '0');
   const cams = (t.e1 != null) ? ` · E1 ${t.e1}° / E2 ${t.e2}°` : '';
   return `<div class="rt-item">
-    ${tile(`robotwin/${id}.mp4`, { ratio: 'r11', label: id, hover: true, caption: `${id} · ${t.name}${cams}` })}
+    ${tile(`robotwin/${id}.mp4`, { ratio: 'r11', label: id, caption: `${id} · ${t.name}${cams}` })}
     <span class="rt-name" title="${esc(t.name)}">${esc(t.name)}</span>${t.e1 != null ? `<span class="rt-cams">E1 ${t.e1}° · E2 ${t.e2}°</span>` : ''}</div>`;
 }).join('');
 
