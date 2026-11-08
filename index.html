@@ -22,22 +22,22 @@
     <video muted loop playsinline preload="none" data-src="static/videos/teaser.mp4"></video>
   </div>
 
-  <p class="tldr"><b>TL;DR</b> — When the camera moves, the robot-frame action stays the same, but the evidence for it moves to new pixels. We keep every camera's native prediction and teach control to follow the same physical evidence across views.</p>
+  <p class="tldr"><b>In short.</b> When the camera moves, the robot-frame action stays the same, but the evidence for it moves to new pixels. We keep every camera's native prediction and teach control to follow the same physical evidence across views.</p>
 
   <div class="stats">
     <div class="stat"><div class="num">92.8%</div><div class="cap">LIBERO-Long success from a single external camera placed anywhere around the table</div></div>
     <div class="stat"><div class="num">0.79M</div><div class="cap">trainable parameters for camera adaptation, world model frozen</div></div>
     <div class="stat"><div class="num">3.97×</div><div class="cap">faster streaming inference with bitwise-identical actions</div></div>
-    <div class="stat"><div class="num">No</div><div class="cap">camera-to-robot registration — only inter-camera calibration</div></div>
+    <div class="stat"><div class="num">No</div><div class="cap">camera-to-robot registration needed, only inter-camera calibration</div></div>
   </div>
 </header>
 
 <!-- ================= 1. REAL WORLD VIEWPOINTS ================= -->
 <section class="alt" id="real">
   <div class="wrap">
-    <div class="eyebrow">REAL WORLD · FRANKA</div>
+    <div class="eyebrow">Real world · Franka</div>
     <h2>Robust to Unseen Viewpoints</h2>
-    <p class="lead">One unified model. At test time the robot sees only the wrist camera and camera 2; camera 1 is withheld (calibration kept). Camera 2 is placed at unseen poses, from the robot's side to the opposite side — where only the withheld camera was trained.</p>
+    <p class="lead">One unified model. At test time the robot sees only the wrist camera and camera 2, while camera 1 is withheld with its calibration kept. Camera 2 is placed at unseen poses, from the robot's side to the opposite side, where only the withheld camera was trained.</p>
     <div id="real-blocks" class="real-blocks"></div>
   </div>
 </section>
@@ -47,9 +47,9 @@
   <div class="wrap">
     <div class="row-between">
       <div>
-        <div class="eyebrow">REAL WORLD · STREAMING</div>
+        <div class="eyebrow">Real world · Streaming</div>
         <h2>Faster Execution, Same Actions</h2>
-        <p class="lead">Both videos play in real time. On top of a fixed-layout KV cache, we reduce the number of denoising steps; the action still reads the latest observation. The bar under each video shows when the robot is acting and when it waits for inference at each chunk boundary.</p>
+        <p class="lead">Both videos play in real time. On top of a fixed-layout KV cache, we reduce the number of denoising steps, and the action still reads the latest observation. The bar under each video shows when the robot is acting and when it waits for inference at each chunk boundary.</p>
       </div>
       <div class="seg" role="tablist" aria-label="Task" id="speed-toggle"></div>
     </div>
@@ -70,7 +70,7 @@
   <div class="wrap">
     <div class="row-between">
       <div>
-        <div class="eyebrow">SIMULATION · LIBERO-LONG</div>
+        <div class="eyebrow">Simulation · LIBERO-Long</div>
         <h2>Cameras Anywhere Around the Table</h2>
         <p class="lead">The same task seen from external cameras displaced up to 180° in azimuth from the canonical view.</p>
       </div>
@@ -87,9 +87,9 @@
   <div class="wrap">
     <div class="row-between">
       <div>
-        <div class="eyebrow">SIMULATION · PARTIAL OBSERVATION</div>
+        <div class="eyebrow">Simulation · Partial observation</div>
         <h2>Seeing a Withheld Camera</h2>
-        <p class="lead">When an external camera is removed, the model imagines its view from the remaining cameras and their relative geometry — and control reads that imagined view. LIBERO-Long: 92.4% with two cameras, 92.8% with one.</p>
+        <p class="lead">When an external camera is removed, the model imagines its view from the remaining cameras and their relative geometry, and control reads that imagined view. LIBERO-Long: 92.4% with two cameras, 92.8% with one.</p>
       </div>
       <div class="seg" role="tablist" aria-label="Example" id="obs-toggle"></div>
     </div>
@@ -102,9 +102,9 @@
   <div class="wrap">
     <div class="row-between">
       <div>
-        <div class="eyebrow">SIMULATION · ROBOTWIN 2.0</div>
+        <div class="eyebrow">Simulation · RoboTwin 2.0</div>
         <h2>50 Bimanual Tasks, Random Cameras</h2>
-        <p class="lead">Every episode samples two external cameras on opposite sides of the table. Hover to play; click to enlarge.</p>
+        <p class="lead">Every episode samples two external cameras on opposite sides of the table. Hover to play and click to enlarge.</p>
       </div>
     </div>
     <div id="rt-grid" class="rt-grid"></div>
