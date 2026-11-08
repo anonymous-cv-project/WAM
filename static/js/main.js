@@ -1,75 +1,64 @@
 /* =====================================================================
-   CONFIG — edit this block to change file names, numbers and captions.
+   CONFIG — edit this block to change file names, angles and captions.
    All video paths are relative to static/videos/.
    A missing video simply shows its grey placeholder label.
    ===================================================================== */
 const CONFIG = {
-  // ---------- 1. Real world viewpoint grid ----------
-  realTasks: [
-    { key: 'hammer',   name: 'Hammer Block' },
-    { key: 'rotate_t', name: 'Rotate T' },
-    { key: 'drawer',   name: 'Drawer Retrieval' }
-  ],
-  realBins: [
-    { key: '0-90',    label: '0–90°',    caption: 'robot side',                          hi: false },
-    { key: '90-135',  label: '90–135°',  caption: 'side view',                           hi: false },
-    { key: '135-180', label: '135–180°', caption: 'opposite side — unseen for camera 2', hi: true  }
-  ],
-  // Actual azimuth |φ| of camera 2 in each clip: [0-90, 90-135, 135-180]
-  realPhi: {
-    hammer:   [45, 110, 160],
-    rotate_t: [40, 120, 150],
-    drawer:   [60, 115, 170]
-  },
-  // Success per bin (Table 4). Fill in LingBot-VA when available.
-  realSuccess: {
-    ours: { hammer: ['5/5', '3/5', '3/5'], rotate_t: ['5/5', '4/5', '4/5'], drawer: ['5/5', '4/5', '5/5'] },
-    va:   { hammer: ['–/5', '–/5', '–/5'], rotate_t: ['–/5', '–/5', '–/5'], drawer: ['–/5', '–/5', '–/5'] }
-  },
-  // files: real/ours/<task>_<bin>.mp4 and real/va/<task>_<bin>.mp4
-  failures: [
-    { file: 'real/fail_1.mp4', caption: 'Hammer Block · 150° · grasp slips' },
-    { file: 'real/fail_2.mp4', caption: 'Rotate T · 120° · under-rotation' },
-    { file: 'real/fail_3.mp4', caption: 'Hammer Block · 170° · [reason]' }
+  // ---------- 1. Real world: our model, successful rollouts ----------
+  // phi = azimuth |φ| of camera 2 about the table center (0° robot side, 180° opposite side).
+  // Clips with phi >= unseenFrom get an orange "unseen side" tag.
+  unseenFrom: 135,
+  real: [
+    { name: 'Drawer Retrieval', clips: [
+      { file: 'real/drawer_1.mp4', phi: 30 },
+      { file: 'real/drawer_2.mp4', phi: 90 },
+      { file: 'real/drawer_3.mp4', phi: 130 },
+      { file: 'real/drawer_4.mp4', phi: 170 } ] },
+    { name: 'Hammer Block', clips: [
+      { file: 'real/hammer_1.mp4', phi: 60 },
+      { file: 'real/hammer_2.mp4', phi: 150 } ] }
   ],
 
   // ---------- 2. Speed ----------
-  speed: [
-    { file: 'speed/original.mp4', name: 'Original LingBot-VA server', sub: '25/50 denoising steps',                       pause: 7.51, acting: '18%' },
-    { file: 'speed/ours.mp4',     name: 'Ours · exact path',          sub: 'fixed-layout cache + CUDA Graph, 10/20 steps', pause: 1.96, acting: '45%' }
-  ],
   chunkSeconds: 1.6,     // one 32-action chunk at 20 Hz
-  barWindowSeconds: 30,  // length of the clip shown by the bar
+  barWindowSeconds: 30,  // time span drawn by each bar
+  speed: [
+    { key: 'drawer', name: 'Drawer Retrieval', pair: [
+      { file: 'speed/drawer_original.mp4', name: 'Original',          sub: 'LingBot-VA server, 25/50 steps',              pause: 7.51, acting: '18%' },
+      { file: 'speed/drawer_fast.mp4',     name: 'Ours · exact path', sub: 'fixed-layout cache + CUDA Graph, 10/20 steps', pause: 1.96, acting: '45%' } ] },
+    { key: 'hammer', name: 'Hammer Block', pair: [
+      { file: 'speed/hammer_original.mp4', name: 'Original',          sub: 'LingBot-VA server, 25/50 steps',              pause: 7.51, acting: '18%' },
+      { file: 'speed/hammer_fast.mp4',     name: 'Ours · exact path', sub: 'fixed-layout cache + CUDA Graph, 10/20 steps', pause: 1.96, acting: '45%' } ] }
+  ],
+  // The even faster variant that fails
+  limit: {
+    file: 'speed/drawer_async_fail.mp4',
+    title: 'Why not go even faster?',
+    variant: 'Asynchronous generation',
+    pause: 0.56, acting: '77%',
+    text: 'Generating each chunk while the previous one executes removes most of the waiting, but the action now reads the model’s own prediction where a real observation was about to arrive. Over a trial the error accumulates and the arm creeps toward the drawer handle. We therefore deploy the exact synchronous path above.'
+  },
 
-  // ---------- 3. Withheld camera ----------
-  // files: withheld/<real|libero>/<cam2|wrist|imagined|gt>.mp4
-
-  // ---------- 4. LIBERO sweep ----------
+  // ---------- 3. LIBERO viewpoints (ours only) ----------
+  // files: libero/<task key>/az<angle>.mp4
   liberoTasks: [
     { key: 'task1', name: '[LIBERO-Long task 1]' },
-    { key: 'task2', name: '[LIBERO-Long task 2]' }
+    { key: 'task2', name: '[LIBERO-Long task 2]' },
+    { key: 'task3', name: '[LIBERO-Long task 3]' }
   ],
   angles: [0, 45, 90, 135, 180],
-  // Horizontal position of 0° and 180° inside fig4.png (fraction of image width)
-  fig4Axis: { left: 0.12, right: 0.96 },
-  // files: libero/<task>/<pi05|anycamvla|ours>_<angle>.mp4
+
+  // ---------- 4. Withheld camera (LIBERO) ----------
+  // files: withheld/<example key>/<cam2|wrist|imagined|gt>.mp4
+  withheld: [
+    { key: 'ex1', name: 'Example 1' },
+    { key: 'ex2', name: 'Example 2' }
+  ],
 
   // ---------- 5. RoboTwin gallery ----------
   // files: robotwin/T01.mp4 ... T50.mp4 (export each as a 2x2 grid of the four cameras)
   // name: task name; e1/e2: azimuths of the two external cameras (degrees)
-  robotwin: Array.from({ length: 50 }, (_, i) => ({ name: '[task name]', e1: null, e2: null })),
-
-  // ---------- 6. Plus benchmarks ----------
-  plus: [
-    { name: 'RoboTwin 2.0-Plus',  score: '[TBD]', clips: [
-      { file: 'plus/robotwin_1.mp4', caption: '15% closer' },
-      { file: 'plus/robotwin_2.mp4', caption: '5° rotation' },
-      { file: 'plus/robotwin_3.mp4', caption: 'closer + rotation' } ] },
-    { name: 'LIBERO-Plus (Long)', score: '83.5%', clips: [
-      { file: 'plus/libero_1.mp4', caption: '2× distance' },
-      { file: 'plus/libero_2.mp4', caption: '10° roll' },
-      { file: 'plus/libero_3.mp4', caption: 'axis off table center' } ] }
-  ]
+  robotwin: Array.from({ length: 50 }, () => ({ name: '[task name]', e1: null, e2: null }))
 };
 
 /* ===================================================================== */
@@ -84,9 +73,9 @@ function tile(file, { ratio = 'r43', label = '', extra = '', cls = '', hover = f
     <video muted loop playsinline preload="none" data-src="${V + file}"${hover ? ' data-hover' : ''}></video>
     ${extra}</div>`;
 }
-function pos(phi) { // 0° = robot side (bottom of map), 180° = opposite side
+function pos(phi, R = 38) { // 0° = robot side (bottom), 180° = opposite side (top)
   const r = phi * Math.PI / 180;
-  return { l: (50 + 38 * Math.sin(r)).toFixed(1) + '%', t: (50 + 38 * Math.cos(r)).toFixed(1) + '%' };
+  return { l: (50 + R * Math.sin(r)).toFixed(1) + '%', t: (50 + R * Math.cos(r)).toFixed(1) + '%' };
 }
 function minimap(phi) {
   const c = pos(phi), w = pos(phi + 180);
@@ -100,9 +89,10 @@ const io = new IntersectionObserver(entries => {
   entries.forEach(e => {
     const v = e.target;
     if (e.isIntersecting) {
-      if (!v.getAttribute('src') && !v.hasAttribute('data-hover')) { v.src = v.dataset.src; }
-      if (!v.hasAttribute('data-hover') && v.getAttribute('src')) v.play().catch(() => {});
-    } else if (!v.paused) { v.pause(); }
+      if (v.hasAttribute('data-hover')) return;
+      if (!v.getAttribute('src')) v.src = v.dataset.src;
+      v.play().catch(() => {});
+    } else if (!v.paused) v.pause();
   });
 }, { rootMargin: '200px' });
 function watch(root = document) {
@@ -117,41 +107,42 @@ function watch(root = document) {
     }
   });
 }
-function swapSrc(v, file) {
-  v.dataset.src = V + file;
-  v.parentNode.querySelector('.ph').innerHTML = `${esc(v.parentNode.dataset.caption)}<br>${esc(file)}`;
-  v.src = v.dataset.src; v.load(); v.play().catch(() => {});
+function segToggle(el, items, onPick) {
+  el.innerHTML = items.map((it, i) => `<button type="button" role="tab" data-i="${i}" class="${i ? '' : 'on'}">${esc(it.name)}</button>`).join('');
+  $$('button', el).forEach(b => b.addEventListener('click', () => {
+    $$('button', el).forEach(x => x.classList.toggle('on', x === b));
+    onPick(+b.dataset.i);
+  }));
 }
 
 /* ---------- 1. real world ---------- */
-let method = 'ours';
-function renderReal() {
-  const T = CONFIG.realTasks;
-  let html = `<div class="real-row head"><div></div>${T.map(t => `<div>${esc(t.name)}</div>`).join('')}</div>`;
-  CONFIG.realBins.forEach((b, bi) => {
-    html += `<div class="real-row${b.hi ? ' hi' : ''}"><div class="bin"><b>${esc(b.label)}</b><span>${esc(b.caption)}</span></div>`;
-    T.forEach(t => {
-      const phi = CONFIG.realPhi[t.key][bi];
-      const ok = method === 'ours';
-      const file = `real/${method}/${t.key}_${b.key}.mp4`;
-      const extra = minimap(phi) +
-        `<div class="badge tr"><span>1×</span><span class="${ok ? 'ok' : 'va'}">${ok ? 'Ours' : 'LingBot-VA'}</span></div>
-         <div class="badge bl">${esc(t.name)} · |φ| = ${phi}°</div>`;
-      html += `<div class="cell">${tile(file, { label: `${t.name} · ${phi}°`, extra, caption: `${ok ? 'Ours' : 'LingBot-VA'} · ${t.name} · |φ| = ${phi}°` })}
-        <div class="succ">Success in bin: <b>${esc(CONFIG.realSuccess[method][t.key][bi])}</b></div></div>`;
-    });
-    html += '</div>';
-  });
-  $('#real-grid').innerHTML = html;
-  watch($('#real-grid'));
-}
-$$('#method-toggle button').forEach(b => b.addEventListener('click', () => {
-  method = b.dataset.method;
-  $$('#method-toggle button').forEach(x => x.classList.toggle('on', x === b));
-  renderReal();
-}));
-$('#fail-grid').innerHTML = CONFIG.failures.map(f =>
-  `<div>${tile(f.file, { label: 'failure', caption: f.caption })}<div class="fail-cap">${esc(f.caption)}</div></div>`).join('');
+(function renderReal() {
+  const legend = `<div class="legend-panel">
+      <div class="sector-map" aria-hidden="true"><div class="table"></div><div class="base"></div>
+        <span class="lab l-robot">robot side · 0°</span><span class="lab l-opp">opposite side · 180°</span></div>
+      <ul class="legend">
+        <li><span class="sw" style="background:#DBEAFE;border:1px solid #93C5FD"></span>0–90° · training range of camera 2</li>
+        <li><span class="sw" style="background:#93C5FD"></span>90–135°</li>
+        <li><span class="sw" style="background:#FDBA74"></span>135–180° · unseen for camera 2</li>
+        <li><span class="dot"></span>camera 2 (visible)</li>
+        <li><span class="x">✕</span>camera 1 (withheld)</li>
+      </ul></div>`;
+  $('#real-blocks').innerHTML = CONFIG.real.map((task, ti) => {
+    const clips = task.clips.slice().sort((a, b) => a.phi - b.phi).map(c => {
+      const unseen = c.phi >= CONFIG.unseenFrom;
+      const extra = minimap(c.phi) +
+        `<div class="badge tr"><span>1×</span><span class="ok">✓ Success</span></div>
+         <div class="badge bl">|φ| = ${c.phi}°</div>` +
+        (unseen ? `<div class="badge unseen">unseen side</div>` : '');
+      return `<div class="cell">${tile(c.file, { label: `${task.name} · ${c.phi}°`, extra, cls: unseen ? 'is-unseen' : '', caption: `${task.name} · camera 2 at |φ| = ${c.phi}°` })}</div>`;
+    }).join('');
+    // the last block gets the legend in its empty columns
+    const pad = (ti === CONFIG.real.length - 1 && task.clips.length <= 2) ? legend : '';
+    return `<div class="real-block"><h3>${esc(task.name)}</h3><div class="grid-4">${clips}${pad}</div></div>`;
+  }).join('');
+  if (!$('.legend-panel')) $('#real-blocks').insertAdjacentHTML('afterbegin', legend);
+  watch($('#real-blocks'));
+})();
 
 /* ---------- 2. speed ---------- */
 function segs(pause) {
@@ -163,86 +154,85 @@ function segs(pause) {
   }
   return out.join('');
 }
-$('#speed-grid').innerHTML = CONFIG.speed.map((s, i) => `
-  <div class="speed-col">
-    <div class="speed-title"><b>${esc(s.name)}</b><span>${esc(s.sub)}</span></div>
+function speedCol(s, id, extraBadge = '') {
+  return `<div class="speed-col">
+    <div class="speed-title"><b>${esc(s.name)}</b><span>${esc(s.sub || '')}</span></div>
     ${tile(s.file, { ratio: 'r169', label: s.name, caption: s.name,
-      extra: `<div class="badge rt-tag">REAL TIME</div><div class="badge clock" data-clock="${i}">00:00.0</div>` })}
-    <div class="bar">${segs(s.pause)}<span class="head" data-head="${i}"></span></div>
+      extra: `<div class="badge rt-tag">REAL TIME</div>${extraBadge}<div class="badge clock" data-clock="${id}">00:00.0</div>` })}
+    <div class="bar">${segs(s.pause)}<span class="head" data-head="${id}"></span></div>
     <div class="speed-nums"><span>Pause per chunk <b>${s.pause.toFixed(2)} s</b></span><span>Time acting <b>${esc(s.acting)}</b></span></div>
-  </div>`).join('');
-const speedVids = $$('#speed-grid video');
-speedVids.forEach((v, i) => v.addEventListener('timeupdate', () => {
-  const t = v.currentTime;
-  $(`[data-clock="${i}"]`).textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${(t % 60).toFixed(1).padStart(4, '0')}`;
-  const frac = Math.min(t / CONFIG.barWindowSeconds, 1);
-  $(`[data-head="${i}"]`).style.left = `calc(${(frac * 100).toFixed(2)}% - 1px)`;
-}));
+  </div>`;
+}
+function bindClock(v, id) {
+  v.addEventListener('timeupdate', () => {
+    const t = v.currentTime;
+    const c = $(`[data-clock="${id}"]`), h = $(`[data-head="${id}"]`);
+    if (c) c.textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${(t % 60).toFixed(1).padStart(4, '0')}`;
+    if (h) h.style.left = `calc(${(Math.min(t / CONFIG.barWindowSeconds, 1) * 100).toFixed(2)}% - 1px)`;
+  });
+}
+function renderSpeed(i) {
+  const set = CONFIG.speed[i];
+  $('#speed-grid').innerHTML = set.pair.map((s, j) => speedCol(s, 's' + j)).join('');
+  $$('#speed-grid video').forEach((v, j) => bindClock(v, 's' + j));
+  watch($('#speed-grid'));
+}
+segToggle($('#speed-toggle'), CONFIG.speed, renderSpeed);
+renderSpeed(0);
 $('#play-both').addEventListener('click', () => {
-  speedVids.forEach(v => { if (!v.getAttribute('src')) v.src = v.dataset.src; v.currentTime = 0; v.play().catch(() => {}); });
+  $$('#speed-grid video').forEach(v => { if (!v.getAttribute('src')) v.src = v.dataset.src; v.currentTime = 0; v.play().catch(() => {}); });
 });
 
-/* ---------- 3. withheld camera ---------- */
+const L = CONFIG.limit;
+$('#limit-card').innerHTML = `
+  <div class="limit-text">
+    <h3>${esc(L.title)}</h3>
+    <p>${esc(L.text)}</p>
+  </div>
+  <div class="limit-video">${speedCol({ file: L.file, name: L.variant, sub: 'Drawer Retrieval', pause: L.pause, acting: L.acting }, 'lim',
+    '<div class="badge fail">✗ Failure</div>')}</div>`;
+bindClock($('#limit-card video'), 'lim');
+watch($('#limit-card'));
+
+/* ---------- 3. LIBERO viewpoints ---------- */
+$('#libero-task').innerHTML = CONFIG.liberoTasks.map((t, i) => `<option value="${i}">${esc(t.name)}</option>`).join('');
+function renderLibero(i) {
+  const t = CONFIG.liberoTasks[i];
+  $('#libero-strip').innerHTML = CONFIG.angles.map(a => `<div class="cell">
+    ${tile(`libero/${t.key}/az${a}.mp4`, { label: `${a}°`, caption: `${t.name} · |Δazimuth| = ${a}°`,
+      extra: `<div class="badge bl">|Δazimuth| = ${a}°</div>` })}</div>`).join('');
+  watch($('#libero-strip'));
+}
+$('#libero-task').addEventListener('change', e => renderLibero(+e.target.value));
+renderLibero(0);
+
+/* ---------- 4. withheld camera ---------- */
 const OBS = [
   { key: 'cam2',     t: 'Camera 2',                n: 'input' },
   { key: 'wrist',    t: 'Wrist camera',            n: 'input' },
   { key: 'imagined', t: 'Camera 1 — imagined',     n: 'what control reads', cls: 'imagined' },
   { key: 'gt',       t: 'Camera 1 — ground truth', n: 'for reference only, never given to the model', cls: 'gt' }
 ];
-function renderObs(set) {
+function renderObs(i) {
+  const ex = CONFIG.withheld[i];
   $('#obs-grid').innerHTML = OBS.map(o => `<div class="obs-col">
-    ${tile(`withheld/${set}/${o.key}.mp4`, { label: o.t, cls: o.cls || '', caption: `${set === 'real' ? 'Real Franka' : 'LIBERO-Long'} · ${o.t}` })}
+    ${tile(`withheld/${ex.key}/${o.key}.mp4`, { label: o.t, cls: o.cls || '', caption: `${ex.name} · ${o.t}` })}
     <div class="t">${esc(o.t)}</div><div class="n">${esc(o.n)}</div></div>`).join('');
   const vs = $$('#obs-grid video');
-  watch($('#obs-grid'));
-  // keep the four views in sync: restart together once all can play
   vs.forEach(v => v.addEventListener('play', () => vs.forEach(o => { if (o !== v && Math.abs(o.currentTime - v.currentTime) > 0.15) o.currentTime = v.currentTime; })));
+  watch($('#obs-grid'));
 }
-$$('#obs-toggle button').forEach(b => b.addEventListener('click', () => {
-  $$('#obs-toggle button').forEach(x => x.classList.toggle('on', x === b));
-  renderObs(b.dataset.obs);
-}));
-renderObs('real');
-
-/* ---------- 4. LIBERO sweep ---------- */
-const SWEEP = [
-  { key: 'pi05',      name: 'π0.5',      sub: 'displaced view as input' },
-  { key: 'anycamvla', name: 'AnyCamVLA', sub: 'view synthesis in loop' },
-  { key: 'ours',      name: 'Ours',      sub: 'one external camera', ours: true }
-];
-let angleIdx = 3, taskKey = CONFIG.liberoTasks[0].key;
-$('#libero-task').innerHTML = CONFIG.liberoTasks.map(t => `<option value="${t.key}">${esc(t.name)}</option>`).join('');
-$('#angle-btns').innerHTML = CONFIG.angles.map((a, i) => `<button type="button" data-i="${i}">${a}°</button>`).join('');
-$('#sweep-rows').innerHTML = SWEEP.map(m => `<div class="sweep-row">
-  <div class="who${m.ours ? ' ours' : ''}"><b>${esc(m.name)}</b><span>${esc(m.sub)}</span></div>
-  ${tile('', { ratio: 'r167', label: m.name, caption: m.name, extra: `<div class="badge tr"><span class="angle-badge"></span></div>` })}
-  </div>`).join('');
-function updateSweep(first) {
-  const a = CONFIG.angles[angleIdx];
-  $$('#angle-btns button').forEach((b, i) => b.classList.toggle('on', i === angleIdx));
-  $$('.angle-badge').forEach(s => s.textContent = a + '°');
-  const { left, right } = CONFIG.fig4Axis;
-  $('#fig4-marker').style.left = ((left + (right - left) * a / 180) * 100).toFixed(2) + '%';
-  $$('#sweep-rows .vid').forEach((box, i) => {
-    const file = `libero/${taskKey}/${SWEEP[i].key}_${a}.mp4`;
-    box.dataset.caption = `${SWEEP[i].name} · ${a}°`;
-    const v = box.querySelector('video');
-    if (first) { v.dataset.src = V + file; box.querySelector('.ph').innerHTML = `${esc(box.dataset.caption)}<br>${esc(file)}`; }
-    else swapSrc(v, file);
-  });
-}
-$$('#angle-btns button').forEach(b => b.addEventListener('click', () => { angleIdx = +b.dataset.i; updateSweep(); }));
-$('#libero-task').addEventListener('change', e => { taskKey = e.target.value; updateSweep(); });
-updateSweep(true);
+segToggle($('#obs-toggle'), CONFIG.withheld, renderObs);
+renderObs(0);
 
 /* ---------- 5. RoboTwin gallery ---------- */
 $('#rt-grid').innerHTML = CONFIG.robotwin.map((t, i) => {
   const id = 'T' + String(i + 1).padStart(2, '0');
   const gap = (t.e1 != null && t.e2 != null) ? Math.abs(((t.e2 - t.e1 + 540) % 360) - 180) : null;
   const wide = gap != null && gap > 120;
-  const cams = (t.e1 != null) ? `E1 ${t.e1}° / E2 ${t.e2}°` : '';
-  return `<div class="rt-item${wide ? ' wide' : ''}" data-wide="${wide}">
-    ${tile(`robotwin/${id}.mp4`, { ratio: 'r11', label: id, hover: true, caption: `${id} · ${t.name} ${cams}` })}
+  const cams = (t.e1 != null) ? ` · E1 ${t.e1}° / E2 ${t.e2}°` : '';
+  return `<div class="rt-item" data-wide="${wide}">
+    ${tile(`robotwin/${id}.mp4`, { ratio: 'r11', label: id, hover: true, caption: `${id} · ${t.name}${cams}` })}
     <span class="rt-name" title="${esc(t.name)}">${esc(t.name)}</span></div>`;
 }).join('');
 $$('#rt-filter button').forEach(b => b.addEventListener('click', () => {
@@ -250,14 +240,7 @@ $$('#rt-filter button').forEach(b => b.addEventListener('click', () => {
   $$('.rt-item').forEach(it => it.classList.toggle('hide', b.dataset.f === 'wide' && it.dataset.wide !== 'true'));
 }));
 
-/* ---------- 6. Plus ---------- */
-$('#plus-grid').innerHTML = CONFIG.plus.map(p => `<div class="plus-col">
-  <div class="plus-title"><b>${esc(p.name)}</b><span>Camera-factor success <em>${esc(p.score)}</em></span></div>
-  <div class="grid-3">${p.clips.map(c => `<div class="plus-clip">${tile(c.file, { ratio: 'r11', label: c.caption, caption: `${p.name} · ${c.caption}` })}<span>${esc(c.caption)}</span></div>`).join('')}</div>
-</div>`).join('');
-
 /* ---------- teaser + init ---------- */
-renderReal();
 watch();
 
 /* ---------- lightbox ---------- */
@@ -265,8 +248,7 @@ const lb = $('#lightbox'), lbv = $('#lb-video');
 document.addEventListener('click', e => {
   const box = e.target.closest('.vid');
   if (!box || box.classList.contains('teaser')) return;
-  const v = box.querySelector('video');
-  lbv.src = v.dataset.src; lbv.play().catch(() => {});
+  lbv.src = box.querySelector('video').dataset.src; lbv.play().catch(() => {});
   $('#lb-caption').textContent = box.dataset.caption || '';
   lb.hidden = false;
 });
