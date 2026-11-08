@@ -60,25 +60,34 @@ function segToggle(el, items, onPick) {
 }
 
 /* ---------- 1. real world ---------- */
+// Angle around the table, clockwise, robot at the top (0 = robot side, 180 = opposite side).
+function ringPos(deg) {
+  const r = deg * Math.PI / 180;
+  return { l: (50 + 41 * Math.sin(r)).toFixed(1) + '%', t: (55 - 34 * Math.cos(r)).toFixed(1) + '%' };
+}
+function camMap(visible, blind) {
+  const v = ringPos(visible), b = ringPos(blind);
+  return `<div class="rmap" aria-hidden="true"><div class="rm-robot"></div><div class="rm-table"></div>
+    <div class="rm-vis" style="left:${v.l};top:${v.t}"></div>
+    <div class="rm-blind" style="left:${b.l};top:${b.t}">✕</div></div>`;
+}
 (function renderReal() {
   const legend = `<div class="legend-panel">
-      <div class="sector-map" aria-hidden="true"><div class="table"></div><div class="base"></div>
-        <span class="lab l-robot">robot side · 0°</span><span class="lab l-opp">opposite side · 180°</span></div>
+      <div class="split-map" aria-hidden="true">
+        <div class="sm-robot">robot</div>
+        <div class="sm-circle"><div class="sm-table"></div></div>
+      </div>
       <ul class="legend">
-        <li><span class="sw" style="background:#DBEAFE;border:1px solid #93C5FD"></span>0–90° · training range of camera 2</li>
-        <li><span class="sw" style="background:#93C5FD"></span>90–135°</li>
-        <li><span class="sw" style="background:#FDBA74"></span>135–180° · unseen for camera 2</li>
-        <li><span class="dot"></span>camera 2 (visible)</li>
-        <li><span class="x">✕</span>camera 1 (withheld)</li>
+        <li><span class="sw" style="background:#FDBA74"></span>camera 1 in training</li>
+        <li><span class="sw" style="background:#93C5FD"></span>camera 2 in training</li>
+        <li><span class="lg-vis"></span>visible camera</li>
+        <li><span class="lg-blind">✕</span>blind camera</li>
       </ul></div>`;
-  $('#real-blocks').innerHTML = CONFIG.real.map((task, ti) => {
-    const clips = task.clips.slice().sort((a, b) => a.phi - b.phi).map(c => {
-      const unseen = c.phi >= CONFIG.unseenFrom;
-      const extra = minimap(c.phi) +
-        `<div class="badge tr"><span>1×</span><span class="ok">✓ Success</span></div>
-         <div class="badge bl">|φ| = ${c.phi}°</div>` +
-        (unseen ? `<div class="badge unseen">unseen side</div>` : '');
-      return `<div class="cell">${tile(c.file, { label: `${task.name} · ${c.phi}°`, extra, cls: unseen ? 'is-unseen' : '', caption: `${task.name} · camera 2 at |φ| = ${c.phi}°` })}</div>`;
+  $('#real-blocks').innerHTML = CONFIG.real.map(task => {
+    const clips = task.clips.map((c, i) => {
+      const extra = camMap(c.visible, c.blind) +
+        `<div class="badge tr"><span>1×</span><span class="ok">✓ Success</span></div>`;
+      return `<div class="cell">${tile(c.file, { label: `${task.name} · clip ${i + 1}`, extra, caption: `${task.name} · clip ${i + 1}` })}</div>`;
     }).join('');
     return `<div class="real-block"><h3>${esc(task.name)}</h3><div class="grid-2 real-tiles">${clips}</div></div>`;
   }).join('');

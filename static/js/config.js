@@ -5,18 +5,20 @@
    ===================================================================== */
 const CONFIG = {
   // ---------- 1. Real world: our model, successful rollouts ----------
-  // phi = azimuth |φ| of camera 2 about the table center (0° robot side, 180° opposite side).
-  // Clips with phi >= unseenFrom get an orange "unseen side" tag.
-  unseenFrom: 135,
+  // Positions of the two cameras in each clip's mini map, as an angle around
+  // the table, clockwise, with the robot at the top:
+  //   0 = robot side (top), 90 = right, 180 = opposite side (bottom), 270 = left.
+  // visible = camera the model sees (circle), blind = withheld camera (cross).
+  // Clips are shown in this order: two per row.
   real: [
     { name: 'Drawer Retrieval', clips: [
-      { file: 'real/drawer_1.mp4', phi: 30 },
-      { file: 'real/drawer_2.mp4', phi: 90 },
-      { file: 'real/drawer_3.mp4', phi: 130 },
-      { file: 'real/drawer_4.mp4', phi: 170 } ] },
+      { file: 'real/drawer_1.mp4', visible: 180, blind: 300 },
+      { file: 'real/drawer_2.mp4', visible: 140, blind: 50 },
+      { file: 'real/drawer_3.mp4', visible: 75,  blind: 225 },
+      { file: 'real/drawer_4.mp4', visible: 305, blind: 135 } ] },
     { name: 'Hammer Block', clips: [
-      { file: 'real/hammer_1.mp4', phi: 60 },
-      { file: 'real/hammer_2.mp4', phi: 150 } ] }
+      { file: 'real/hammer_1.mp4', visible: 165, blind: 285 },
+      { file: 'real/hammer_2.mp4', visible: 75,  blind: 225 } ] }
   ],
 
   // ---------- 2. Speed ----------
