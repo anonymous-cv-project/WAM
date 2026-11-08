@@ -37,7 +37,7 @@
   <div class="wrap">
     <div class="eyebrow">Real world · Franka</div>
     <h2>Robust to Unseen Viewpoints</h2>
-    <p class="lead">One unified model. At test time the robot sees only the wrist camera and one external camera, while another external camera is withheld with its calibration kept. The external camera is placed at unseen poses, from the robot's side to the opposite side, where only the withheld camera was trained.</p>
+    <p class="lead">One unified model. At test time the robot sees only the wrist camera and one external camera, while the other external camera is blind with its calibration kept. In training, each external camera covered only one half of the table. At test time the visible camera is moved to unseen poses, including the half that only the other camera covered in training.</p>
     <div id="real-blocks" class="real-blocks"></div>
   </div>
 </section>
