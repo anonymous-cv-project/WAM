@@ -261,3 +261,6 @@ footer{padding:32px 24px;text-align:center;font-size:13px;color:var(--faint)}
 .rm-vis{width:17px;height:17px;border-width:3px}
 .rm-blind{font-size:19px}
 .eyebrow{font-size:22px;margin-bottom:-15px}
+.real-intro{display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between}
+.real-intro-text{flex:1 1 520px;min-width:0;display:flex;flex-direction:column;gap:24px}
+.real-intro .legend-panel{flex:0 0 auto}
