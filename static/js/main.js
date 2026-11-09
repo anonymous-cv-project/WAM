@@ -91,7 +91,16 @@ function camMap(visible, blind) {
     }).join('');
     return `<div class="real-block"><h3>${esc(task.name)}</h3><div class="grid-2 real-tiles">${clips}</div></div>`;
   }).join('');
-  $('#real-blocks').insertAdjacentHTML('afterbegin', legend);
+  // Put the legend to the right of the section intro (eyebrow, title, paragraph)
+  const wrap = $('#real .wrap');
+  const intro = document.createElement('div');
+  intro.className = 'real-intro';
+  const left = document.createElement('div');
+  left.className = 'real-intro-text';
+  ['.eyebrow', 'h2', '.lead'].forEach(sel => { const el = $(sel, wrap); if (el) left.appendChild(el); });
+  intro.appendChild(left);
+  intro.insertAdjacentHTML('beforeend', legend);
+  wrap.insertBefore(intro, wrap.firstChild);
   watch($('#real-blocks'));
 })();
 
