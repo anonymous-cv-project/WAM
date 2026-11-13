@@ -75,7 +75,7 @@ function camMap(visible, blind) {
   const legend = `<div class="legend-panel">
       <div class="split-map" aria-hidden="true">
         <div class="sm-robot">robot</div>
-        <div class="sm-circle"><div class="sm-table"></div></div>
+        <div class="sm-circle"><div class="sm-table">table</div></div>
       </div>
       <ul class="legend">
         <li><span class="sw" style="background:#FDBA74"></span>camera 1 in training</li>
