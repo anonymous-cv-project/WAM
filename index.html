@@ -23,10 +23,10 @@
     <div class="badge tr" style="right:16px;top:16px"><span style="font-size:22px;padding:6px 14px;border-radius:6px">4×</span></div>
   </div>
 
-  <p class="tldr"><b>Takeaway:</b> When the camera moves, the robot-frame action stays the same, but the evidence for it moves to new pixels. We keep every camera's native prediction and teach control to follow the same physical evidence across views.</p>
-
+  <p class="tldr">Our training strategy makes a World Action Model robust to changes in camera extrinsics. The video above shows the robot completing manipulation tasks with the external camera placed at six arbitrary poses at test time. In all six runs, the model receives images from only one external camera and the wrist camera.</p>
+  
   <div class="stats">
-    <div class="stat"><div class="num">92.8%</div><div class="cap">LIBERO-Long success from a single external camera placed anywhere around the table</div></div>
+    <div class="stat"><div class="num">92.8%</div><div class="cap">LIBERO-Long success from a single external camera at an arbitrary azimuth around the table</div></div>
     <div class="stat"><div class="num">0.79M</div><div class="cap">trainable parameters for camera adaptation, with world model frozen</div></div>
     <div class="stat"><div class="num">3.97×</div><div class="cap">faster streaming inference with bitwise-identical actions</div></div>
     <div class="stat"><div class="num">No</div><div class="cap">camera-to-robot registration needed, only inter-camera calibration</div></div>
@@ -49,7 +49,7 @@
     <div class="row-between">
       <div>
         <div class="eyebrow">Real world · Streaming</div>
-        <h2>Faster Execution, Same Actions</h2>
+        <h2>Faster Execution with Fewer Denoising Steps</h2>
         <p class="lead">Both videos play in real time. On top of a fixed-layout KV cache, we reduce the number of denoising steps, and the action still reads the latest observation.</p>
       </div>
       <div class="seg" role="tablist" aria-label="Task" id="speed-toggle"></div>
@@ -85,7 +85,7 @@
     <div class="row-between">
       <div>
         <div class="eyebrow">Simulation · Partial observation</div>
-        <h2>Seeing a Blind Camera</h2>
+        <h2>Imagining the Blind Camera's View</h2>
         <p class="lead">When an external camera is removed, the model imagines its view from the remaining cameras and their relative geometry, and control reads that imagined view. LIBERO-Long: 92.4% with two cameras, 92.8% with one.</p>
       </div>
       <div class="seg" role="tablist" aria-label="Example" id="obs-toggle"></div>
