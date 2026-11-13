@@ -50,7 +50,7 @@
       <div>
         <div class="eyebrow">Real world · Streaming</div>
         <h2>Faster Execution with Fewer Denoising Steps</h2>
-        <p class="lead">Both videos play in real time. On top of a fixed-layout KV cache, we reduce the number of denoising steps, and the action still reads the latest observation.</p>
+        <p class="lead">Both videos play in real time and use the same accelerated pipeline, a fixed-layout KV cache with resynchronization. They differ only in the number of denoising steps per action chunk, 25/50 (video/action) on the left and 10/20 on the right. With fewer steps, the robot waits less between action chunks.</p>
       </div>
       <div class="seg" role="tablist" aria-label="Task" id="speed-toggle"></div>
     </div>
