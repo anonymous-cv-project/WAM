@@ -168,8 +168,8 @@ renderLibero(0);
 const OBS = [
   { key: 'cam2',     t: 'Camera 2',                n: 'input' },
   { key: 'wrist',    t: 'Wrist camera',            n: 'input' },
-  { key: 'imagined', t: 'Camera 1 (imagined)',     n: 'what control reads', cls: 'imagined' },
-  { key: 'gt',       t: 'Camera 1 (ground truth)', n: 'for reference only, never given to the model', cls: 'gt' }
+  { key: 'imagined', t: 'Camera 1 (imagined)',     n: 'used to predict actions', cls: 'imagined' },
+  { key: 'gt',       t: 'Camera 1 (ground truth)', n: 'for reference only, not given to the model', cls: 'gt' }
 ];
 function renderObs(i) {
   const ex = CONFIG.withheld[i];
