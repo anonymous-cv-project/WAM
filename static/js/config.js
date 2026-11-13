@@ -28,11 +28,11 @@ const CONFIG = {
   // Leave acting: [] and the bar shows "not annotated yet".
   speed: [
     { key: 'drawer', name: 'Drawer Retrieval', pair: [
-      { file: 'speed/drawer_original.mp4', name: 'Original',                    sub: 'resynchronization + 25/50 denoising steps',     acting: [] },
-      { file: 'speed/drawer_fast.mp4',     name: 'Ours · fewer denoising steps', sub: 'resynchronization + 10/20 denoising steps', acting: [] } ] },
+      { file: 'speed/drawer_original.mp4', name: 'Default denoising steps',                    sub: 'resynchronization + 25/50 denoising steps',     acting: [] },
+      { file: 'speed/drawer_fast.mp4',     name: 'Fewer denoising steps', sub: 'resynchronization + 10/20 denoising steps', acting: [] } ] },
     { key: 'hammer', name: 'Hammer Block', pair: [
-      { file: 'speed/hammer_original.mp4', name: 'Original',                    sub: 'resynchronization + 25/50 denoising steps',     acting: [] },
-      { file: 'speed/hammer_fast.mp4',     name: 'Ours · fewer denoising steps', sub: 'resynchronization + 10/20 denoising steps', acting: [] } ] }
+      { file: 'speed/hammer_original.mp4', name: 'Default denoising steps',                    sub: 'resynchronization + 25/50 denoising steps',     acting: [] },
+      { file: 'speed/hammer_fast.mp4',     name: 'Fewer denoising steps', sub: 'resynchronization + 10/20 denoising steps', acting: [] } ] }
   ],
   // The even faster variant that fails
   limit: {
