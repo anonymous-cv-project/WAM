@@ -264,3 +264,5 @@ footer{padding:32px 24px;text-align:center;font-size:13px;color:var(--faint)}
 .real-intro{display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between}
 .real-intro-text{flex:1 1 520px;min-width:0;display:flex;flex-direction:column;gap:24px}
 .real-intro .legend-panel{flex:0 0 auto}
+.sm-robot{width:64px;height:26px;font-size:14px;font-weight:600}
+.sm-table{display:flex;align-items:center;justify-content:center;font-size:14px;color:#4B5160}
