@@ -40,7 +40,7 @@ const CONFIG = {
     title: 'Why not go even faster?',
     variant: 'Asynchronous chunk prediction',
     acting: [],
-    text: 'Built on the same KV cache, this variant predicts the next action chunk while the current one is still executing, so the robot almost never waits. But the next chunk is then conditioned on the model\u2019s own prediction of the scene instead of the observation that was about to arrive. Over a trial the error accumulates and the arm creeps toward the drawer handle. In contrast, fewer denoising steps keep the latest observation and stay within seed-to-seed variation, so we deploy that path.'
+    text: 'Built on the same KV cache, this variant predicts the next action chunk while the current one is still executing, so the robot almost never waits. But the next chunk is then conditioned on the model\u2019s own predicted video frames instead of the camera images that were about to arrive. Over a trial the prediction error accumulates and the arm creeps toward the drawer handle. In contrast, with fewer denoising steps each chunk is still conditioned on the newest camera images, and the success rate stays close to that with more steps, so we deploy that setting.'
   },
 
   // ---------- 3. LIBERO viewpoints (ours only) ----------
