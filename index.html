@@ -49,8 +49,8 @@
     <div class="row-between">
       <div>
         <div class="eyebrow">Real world · Streaming</div>
-        <h2>Faster Execution with Fewer Denoising Steps</h2>
-        <p class="lead">Both videos play in real time and use the same accelerated pipeline, a fixed-layout KV cache with resynchronization. They differ only in the number of denoising steps per action chunk, 25/50 (video/action) on the left and 10/20 on the right. With fewer steps, the robot waits less between action chunks.</p>
+        <h2>Faster Streaming with Cache Specialization and Resynchronization</h2>
+        <p class="lead">Our fixed-layout K/V cache, resident model parameters, and CUDA Graph replay accelerate inference while preserving bitwise-identical actions. In the asynchronous setting, generation overlaps with robot motion, with fresh camera observations resynchronizing the rollout every two action chunks to limit prediction drift. The videos contrast synchronous execution (left) with resynchronized asynchronous execution (right), both using the same cache-optimized inference pipeline.</p>
       </div>
       <div class="seg" role="tablist" aria-label="Task" id="speed-toggle"></div>
     </div>
