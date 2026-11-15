@@ -28,11 +28,11 @@ const CONFIG = {
   // Leave acting: [] and the bar shows "not annotated yet".
   speed: [
     { key: 'drawer', name: 'Drawer Retrieval', pair: [
-      { file: 'speed/drawer_original.mp4', name: 'Default denoising steps',                    sub: 'resynchronization + 25/50 denoising steps',     acting: [] },
-      { file: 'speed/drawer_fast.mp4',     name: 'Fewer denoising steps', sub: 'resynchronization + 10/20 denoising steps', acting: [] } ] },
+      { file: 'speed/drawer_original.mp4', name: 'Default Denoising + Sync', sub: '25/50 steps (video/action)', acting: [] },
+      { file: 'speed/drawer_fast.mp4',     name: 'Reduced Denoising + Resync', sub: '10/20 steps (video/action)', acting: [] } ] },
     { key: 'hammer', name: 'Hammer Block', pair: [
-      { file: 'speed/hammer_original.mp4', name: 'Default denoising steps',                    sub: 'resynchronization + 25/50 denoising steps',     acting: [] },
-      { file: 'speed/hammer_fast.mp4',     name: 'Fewer denoising steps', sub: 'resynchronization + 10/20 denoising steps', acting: [] } ] }
+      { file: 'speed/hammer_original.mp4', name: 'Default Denoising + Sync', sub: '25/50 steps (video/action)', acting: [] },
+      { file: 'speed/hammer_fast.mp4',     name: 'Reduced Denoising + Resync', sub: '10/20 steps (video/action)', acting: [] } ] }
   ],
   // The even faster variant that fails
   limit: {
@@ -40,7 +40,7 @@ const CONFIG = {
     title: 'Why not go even faster?',
     variant: 'Asynchronous chunk prediction',
     acting: [],
-    text: 'Built on the same KV cache, this variant predicts the next action chunk while the current one is still executing, so the robot almost never waits. But the next chunk is then conditioned on the model\u2019s own predicted video frames instead of the camera images that were about to arrive. Over a trial the prediction error accumulates and the arm creeps toward the drawer handle. In contrast, with fewer denoising steps each chunk is still conditioned on the newest camera images, and the success rate stays close to that with more steps, so we deploy that setting.'
+    text: 'Fully asynchronous generation overlaps inference and action execution without returning to fresh observations, repeatedly conditioning on its own predicted video history. The resulting drift accumulates, and the robot slows near the drawer handle. Our deployed pipeline instead resynchronizes with camera observations every two action chunks, limiting this drift while retaining some execution overlap.'
   },
 
   // ---------- 3. LIBERO viewpoints (ours only) ----------
