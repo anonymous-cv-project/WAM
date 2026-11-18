@@ -189,7 +189,6 @@ footer{padding:32px 24px;text-align:center;font-size:13px;color:var(--faint)}
   .sweep-row .who{width:84px}
 }
 
-/* ===== v2 additions ===== */
 .real-blocks{display:flex;flex-direction:column;gap:28px}
 .real-block{display:flex;flex-direction:column;gap:12px}
 .real-block h3,.limit-text h3{margin:0;font-size:18px;font-weight:600;font-family:Inter,system-ui,sans-serif}
@@ -218,7 +217,6 @@ footer{padding:32px 24px;text-align:center;font-size:13px;color:var(--faint)}
   .legend-panel{flex-direction:column;align-items:flex-start}
 }
 
-/* ===== v3 ===== */
 .real-tiles{gap:16px}
 .real-tiles .minimap{width:84px;height:84px;left:12px;top:12px;border-radius:10px}
 .real-tiles .minimap .tb{width:28px;height:18px}
@@ -232,20 +230,19 @@ footer{padding:32px 24px;text-align:center;font-size:13px;color:var(--faint)}
 .real-blocks .legend-panel{grid-column:auto;align-self:flex-start}
 .rt-cams{font-size:10px;color:var(--faint);white-space:nowrap}
 
-/* ===== v5 ===== */
 .badge.fail{left:10px;top:10px}
 .bar-empty{flex:1;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--faint);background:#EEF0F3}
 .bar{height:16px}
 
-/* ===== v6: plain progress bar ===== */
+/* ===== plain progress bar ===== */
 .progress{position:relative;height:6px;border-radius:3px;background:#D4D7DD;overflow:hidden;cursor:pointer}
 .progress .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ink)}
 .limit-video .progress{background:#E8C9C9}
 
-/* ===== v7: gallery names wrap to two lines ===== */
+/* ===== gallery names wrap to two lines ===== */
 .rt-name{white-space:normal;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.6em}
 
-/* ===== v9: camera maps following the sketch (robot at the top) ===== */
+/* ===== camera maps following the sketch ===== */
 .rmap{position:absolute;left:12px;top:12px;width:104px;height:84px;border-radius:8px;background:rgba(255,255,255,.93);pointer-events:none}
 .rm-robot{position:absolute;left:50%;top:7%;width:30%;height:13%;transform:translateX(-50%);border-radius:2px;background:#1A1C21}
 .rm-table{position:absolute;left:50%;top:58%;width:52%;height:34%;transform:translate(-50%,-50%);border:1.5px solid #4B5160;border-radius:2px}
@@ -266,3 +263,6 @@ footer{padding:32px 24px;text-align:center;font-size:13px;color:var(--faint)}
 .real-intro .legend-panel{flex:0 0 auto}
 .sm-robot{width:64px;height:26px;font-size:14px;font-weight:600}
 .sm-table{display:flex;align-items:center;justify-content:center;font-size:14px;color:#4B5160}
+.row-between{flex-wrap:wrap}
+.row-between > div:first-child{flex:1 1 480px;min-width:0}
+.row-between > .seg,.row-between > .task-select{flex-shrink:0}
