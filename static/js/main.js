@@ -1,4 +1,3 @@
-/* Page logic. Settings live in static/js/config.js */
 if (typeof CONFIG === 'undefined') {
   document.body.insertAdjacentHTML('afterbegin',
     '<div style="padding:16px;background:#DC2626;color:#fff;font:600 15px Inter,sans-serif;text-align:center">' +
