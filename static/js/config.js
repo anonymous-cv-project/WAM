@@ -1,15 +1,5 @@
-/* =====================================================================
-   CONFIG: edit this file to change file names, angles, captions and the
-   speed bars. All video paths are relative to static/videos/.
-   A missing video simply shows its grey placeholder label.
-   ===================================================================== */
 const CONFIG = {
   // ---------- 1. Real world: our model, successful rollouts ----------
-  // Positions of the two cameras in each clip's mini map, as an angle around
-  // the table, clockwise, with the robot at the top:
-  //   0 = robot side (top), 90 = right, 180 = opposite side (bottom), 270 = left.
-  // visible = camera the model sees (circle), blind = withheld camera (cross).
-  // Clips are shown in this order: two per row.
   real: [
     { name: 'Drawer Retrieval', clips: [
       { file: 'real/drawer_1.mp4', visible: 180, blind: 300 },
@@ -22,10 +12,6 @@ const CONFIG = {
   ],
 
   // ---------- 2. Speed ----------
-  // acting: the time ranges [start, end] (seconds, measured in THIS video file)
-  // during which the robot is moving. Everything between them is drawn as waiting.
-  // Get them with tools/acting_segments.py, from your robot logs, or by hand.
-  // Leave acting: [] and the bar shows "not annotated yet".
   speed: [
     { key: 'drawer', name: 'Drawer Retrieval', pair: [
       { file: 'speed/drawer_original.mp4', name: 'Default Denoising + Sync', sub: '25/50 steps (video/action)', acting: [] },
@@ -43,7 +29,7 @@ const CONFIG = {
     text: 'Fully asynchronous generation overlaps inference and action execution without returning to fresh observations, repeatedly conditioning on its own predicted video history. The resulting drift accumulates, and the robot slows near the drawer handle. Our deployed pipeline instead resynchronizes with camera observations every two action chunks, limiting this drift while retaining some execution overlap.'
   },
 
-  // ---------- 3. LIBERO viewpoints (ours only) ----------
+  // ---------- 3. LIBERO viewpoints ----------
   // files: libero/<task key>/az<angle>.mp4
   liberoTasks: [
     { key: 'task1', name: 'Turn on the stove and put the moka pot on it' },
@@ -61,7 +47,6 @@ const CONFIG = {
 
   // ---------- 5. RoboTwin gallery ----------
   // files: robotwin/T01.mp4 ... T50.mp4 (export each as a 2x2 grid of the four cameras)
-  // name: task name; e1/e2: azimuths of the two external cameras in degrees (optional, shown under the tile)
   robotwin: [
     { name: 'adjust bottle', e1: null, e2: null },  // T01.mp4
     { name: 'beat block hammer', e1: null, e2: null },  // T02.mp4
